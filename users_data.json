@@ -1,9 +1,18 @@
 [
-  "Alex",
-  "Bob",
-  "Candy",
-  "Tom",
-  "Max",
-  "Sindy",
-  "Jane"
+  {
+    "username": "Alex",
+    "password": "123"
+  },
+  {
+    "username": "Bob",
+    "password": "234"
+  },
+  {
+    "username": "Candy",
+    "password": "q"
+  },
+  {
+    "username": "Max",
+    "password": "max"
+  }
 ]

@@ -3,27 +3,28 @@
     "created_by": "Alex",
     "reviewers": [
       "Bob",
-      "Candy",
-      "Tom"
+      "Candy"
     ],
     "item": "Apple",
     "quantity": 1,
     "price": 1.0,
-    "reason": "eat",
+    "reason": "eating",
     "votes": {
-      "Bob": "approve"
+      "Bob": "approve",
+      "Candy": "reject"
     }
   },
   {
-    "created_by": "Bob",
+    "created_by": "Alex",
     "reviewers": [
-      "Alex",
-      "Candy"
+      "Bob"
     ],
-    "item": "Football",
-    "quantity": 1,
-    "price": 11.0,
-    "reason": "Teacher required",
-    "votes": {}
+    "item": "Banana",
+    "quantity": 2,
+    "price": 2.0,
+    "reason": "eating",
+    "votes": {
+      "Bob": "approve"
+    }
   }
 ]

@@ -22,8 +22,9 @@ def add_request(
         raise ValueError("You must select at least one reviewer.")
     if created_by in reviewers:
         raise ValueError("You cannot be your own reviewer.")
+    existing_usernames = [u["username"] for u in users]
     for reviewer in reviewers:
-        if reviewer not in users:
+        if reviewer not in existing_usernames:
             raise ValueError(f"Reviewer '{reviewer}' does not exist.")
     new_request = {
         "created_by": created_by,

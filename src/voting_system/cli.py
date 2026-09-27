@@ -1,6 +1,6 @@
 from .requests import add_request
 from .storage import load_requests, load_users, save_requests, save_users
-from .users import add_user
+from .users import add_user, login
 from .utils import get_non_negative_float, get_positive_int
 from .votes import cast_vote
 
@@ -12,6 +12,10 @@ def main():
 
     while True:
         print("\n" + "-" * 30)
+        if current_user:
+            print(f"Logged in as: {current_user}")
+        else:
+            print("Not logged in")
         print("1. Create user")
         print("2. List users")
         print("3. Login")
@@ -24,48 +28,48 @@ def main():
 
         if choice == "1":
             name = input("User name: ")
+            password = input("Password: ")
             try:
-                users = add_user(users, name)
+                users = add_user(users, name, password)
                 save_users(users)
                 print(f"Created user: {name.strip()}")
             except ValueError as error:
                 print(error)
             input("\nPress Enter to return to menu...")
         elif choice == "2":
-            print("Users:", ", ".join(users) if users else "None yet")
+            if users:
+                names = ", ".join(u["username"] for u in users)
+            else:
+                names = "None yet"
+            print("Users:", names)
             input("\nPress Enter to return to menu...")
         elif choice == "3":
             name = input("Username: ").strip()
-            if name in users:
+            password = input("Password: ").strip()
+            if login(users, name, password):
                 current_user = name
                 print(f"Logged in as {current_user}")
             else:
-                print("User not found.")
+                print("Wrong username or password.")
             input("\nPress Enter to return to menu...")
         elif choice == "4":
             if current_user is None:
                 print("Please login first.")
             else:
+                cancelled = False
                 while True:
                     reviewer_input = input("Reviewers (comma separated usernames): ")
                     reviewers = [r.strip() for r in reviewer_input.split(",")]
 
-                    invalid = [r for r in reviewers if r not in users]
+                    existing_usernames = [u["username"] for u in users]
+                    invalid = [r for r in reviewers if r not in existing_usernames]
                     if invalid:
-                        for name in invalid:
-                            answer = input(f"User '{name}' doesn't exist. Create now? (y/n): ").strip().lower()
-                            if answer == "y":
-                                try:
-                                    users = add_user(users, name)
-                                    save_users(users)
-                                    print(f"Created user: {name}")
-                                except ValueError as error:
-                                    print(error)
-
-                        # check if everybody exits
-                        still_invalid = [r for r in reviewers if r not in users]
-                        if still_invalid:
-                            print(f"Still missing: {', '.join(still_invalid)}. Let's try again.")
+                        print(f"These users don't exist yet: {', '.join(invalid)}")
+                        retry = input("Type 'r' to re-enter reviewers, or 'm' to return to menu: ").strip().lower()
+                        if retry == "m":
+                            cancelled = True
+                            break
+                        else:
                             continue
 
                     if current_user in reviewers:
@@ -73,17 +77,19 @@ def main():
                         continue
 
                     break
-                item = input("What do you want to buy? ")
-                quantity = get_positive_int("Quantity: ")
-                price = get_non_negative_float("Price: ")
-                reason = input("Reason: ")
-                try:
-                    requests_list = add_request(
-                        requests_list, users, current_user, reviewers, item, quantity, price, reason)
-                    save_requests(requests_list)
-                    print("Request created!")
-                except ValueError as error:
-                    print(error)
+
+                if not cancelled:
+                    item = input("What do you want to buy? ")
+                    quantity = get_positive_int("Quantity: ")
+                    price = get_non_negative_float("Price: ")
+                    reason = input("Reason: ")
+                    try:
+                        requests_list = add_request(
+                            requests_list, users, current_user, reviewers, item, quantity, price, reason)
+                        save_requests(requests_list)
+                        print("Request created!")
+                    except ValueError as error:
+                        print(error)
             input("\nPress Enter to return to menu...")
         elif choice == "5":
             if not requests_list:
@@ -108,6 +114,7 @@ def main():
                 for i, req in enumerate(requests_list, start=1):
                     print(f"{i}. {req['item']} x{req['quantity']} - ${req['price']} "
                           f"(by {req['created_by']})")
+                    print(f"   Reviewers: {', '.join(req['reviewers'])}")
                 try:
                     choice_num = int(input("Which request number? "))
                     decision = input("approve or reject? ").strip().lower()
