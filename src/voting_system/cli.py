@@ -96,14 +96,20 @@ def main():
                 print("No requests yet.")
             else:
                 for i, req in enumerate(requests_list, start=1):
-                    approvals = sum(1 for v in req["votes"].values() if v == "approve")
-                    rejections = sum(1 for v in req["votes"].values() if v == "reject")
+                    approvers = [name for name, v in req["votes"].items() if v["decision"] == "approve"]
+                    rejecters = [(name, v["reason"]) for name, v in req["votes"].items() if v["decision"] == "reject"]
                     pending = [r for r in req["reviewers"] if r not in req["votes"]]
 
                     print(f"{i}. {req['item']} x{req['quantity']} - ${req['price']} "
                           f"(by {req['created_by']})")
-                    print(f"   Approvals: {approvals}, Rejections: {rejections}, "
-                          f"Pending: {', '.join(pending) if pending else 'None'}")
+                    print(f"   Approvals ({len(approvers)}): {', '.join(approvers) if approvers else 'None'}")
+                    if rejecters:
+                        print(f"   Rejections ({len(rejecters)}):")
+                        for name, reason in rejecters:
+                            print(f"     - {name}: {reason}")
+                    else:
+                        print("   Rejections (0): None")
+                    print(f"   Pending: {', '.join(pending) if pending else 'None'}")
             input("\nPress Enter to return to menu...")
         elif choice == "6":
             if current_user is None:
@@ -118,7 +124,10 @@ def main():
                 try:
                     choice_num = int(input("Which request number? "))
                     decision = input("approve or reject? ").strip().lower()
-                    requests_list = cast_vote(requests_list, choice_num - 1, current_user, decision)
+                    reason = ""
+                    if decision == "reject":
+                        reason = input("Reason for rejection: ").strip()
+                    requests_list = cast_vote(requests_list, choice_num - 1, current_user, decision, reason)
                     save_requests(requests_list)
                     print("Vote recorded!")
                 except ValueError as error:

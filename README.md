@@ -29,6 +29,18 @@ Different people share and use the same computer, logging in separately to creat
 uv pip install -e .
 uv run -m voting_system
 ```
+## Example
+
+Once running, you'll see a menu like this:
+
+1. Create user
+2. List users
+3. Login
+4. Create request
+5. List requests
+6. Vote on request
+7. Exit<br>
+Please enter your choice:
 
 ## 5. Project Structure
 ```

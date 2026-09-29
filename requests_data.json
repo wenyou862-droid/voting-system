@@ -3,28 +3,22 @@
     "created_by": "Alex",
     "reviewers": [
       "Bob",
-      "Candy"
+      "Candy",
+      "Max"
     ],
-    "item": "Apple",
+    "item": "Iphone Duo",
     "quantity": 1,
-    "price": 1.0,
-    "reason": "eating",
+    "price": 2299.0,
+    "reason": "It is the newest Iphone",
     "votes": {
-      "Bob": "approve",
-      "Candy": "reject"
-    }
-  },
-  {
-    "created_by": "Alex",
-    "reviewers": [
-      "Bob"
-    ],
-    "item": "Banana",
-    "quantity": 2,
-    "price": 2.0,
-    "reason": "eating",
-    "votes": {
-      "Bob": "approve"
+      "Bob": {
+        "decision": "reject",
+        "reason": "too expensive"
+      },
+      "Candy": {
+        "decision": "approve",
+        "reason": ""
+      }
     }
   }
 ]

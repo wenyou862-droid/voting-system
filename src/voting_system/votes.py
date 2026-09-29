@@ -1,4 +1,4 @@
-def cast_vote(requests: list[dict], request_index: int, voter: str, decision: str) -> list[dict]:
+def cast_vote(requests: list[dict], request_index: int, voter: str, decision: str, reason: str = "") -> list[dict]:
     """Record a vote from a reviewer on a specific request."""
     if request_index < 0 or request_index >= len(requests):
         raise ValueError("Invalid request number.")
@@ -12,5 +12,5 @@ def cast_vote(requests: list[dict], request_index: int, voter: str, decision: st
     if decision not in ("approve", "reject"):
         raise ValueError("Decision must be 'approve' or 'reject'.")
 
-    request["votes"][voter] = decision
+    request["votes"][voter] = {"decision": decision, "reason": reason}
     return requests
