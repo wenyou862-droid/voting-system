@@ -6,8 +6,11 @@ build-backend = "setuptools.build_meta"
 name = "voting-system"
 version = "0.1.0"
 description = "A command-line tool for collecting friends' opinions on purchases"
+readme = "README.md"
 requires-python = ">=3.10"
-
+authors = [
+    {name = "Wenyou Zhang", email = "wenyou862@gmail.com"}
+]
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["voting_system*"]
@@ -16,3 +19,6 @@ include = ["voting_system*"]
 dev = [
     "ruff>=0.16.8",
 ]
+
+[project.urls]
+Homepage = "https://github.com/wenyou862-droid/voting-system"
